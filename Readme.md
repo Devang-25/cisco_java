@@ -379,3 +379,269 @@ Softwares Required:
     	===============================
 
     	Need to track how many account instances are created
+================================================================================
+
+	JVM => Class Data , Stack and Heap
+
+	Local variables reside on Stack [ method level]
+	instance variables reside on HEAP [ object specific members]
+	static variables is in class data. [ shared by all objects of a class]
+
+	in Java we don't have global variables
+=================================================================================
+
+	Relationship between objects:
+		a) Generalization and Specialization
+		b) Realization
+		c) Association
+		d) Uses A Relationship
+		============
+
+		Generalization and Specialization done using Inheritance in programming language
+
+	Java Development Tools:
+		1) IDE --> Eclipse, IntelliJ, NetBeans,..
+		2) Maven --> Depdendency Management Tool
+		3) CheckStyle
+			--> static code analysis
+			Checks Naming Conventions of Class , variable, package and methods
+			Java uses CamelCase for Class, var and methods
+
+			class OracleConnection {}
+			getMeTea() {}
+			int userAge;
+
+			Java uses Snake case for constants and only upper case characters
+			final int MAX_AGE = 100;
+		4) PMD / FindBugs
+			--> static code analysis to check good programming concepts
+
+			a) Code Not reachable
+			b) Empty conditional statement
+				if(conditon) {
+
+				} else {
+						code
+				}
+			c) Empty catch blocks
+			d) Copy and Paste Code
+				setId() getId() setName() getName() present in both Mobile and Tv
+				recommends to apply DRY principle ==> Don't Repeat Yourself == >Reuse
+
+		==========================
+
+		TataSky Adv [https://www.youtube.com/watch?v=hXkzfLaps8s]
+
+			1) Lady goes to a Tailor [ Tom Alter]
+			2) Tailor asks what do you keep in your pocket?
+			3) Lady replies ==> Whatever, TV 
+
+			4) Tailor says "i need to stich 14 inch or 32 inch pocket"
+
+			Problem: Wrong relation 
+
+			She meant "Mobile which has TataSky Tv app" <-- Has A
+				"Mobile is a Tv" < -- IS A
+		================================
+
+		How to establish IS-A Relationship [ Generalization and Specialization ] in Java
+
+		==> keyword [ extends]
+
+		// implicitly Product extends Object
+		class Product  {
+
+		}
+		// Mobile is a specialized Product
+		class Mobile extends Product {
+
+		}
+
+
+		class Tv extends Product {
+
+		}
+
+		In Java Object is the root class for every object
+
+		=========================================================
+
+		1) 
+		public class Product  {
+			public Product() {
+				s.o.p("P1");
+			}
+			public Product(int id) {
+				s.o.p("P2");
+			}
+		}
+		 
+		public class Mobile extends Product {
+			public Mobile() {
+				s.o.p("M1");
+			}
+			public Mobile(int id, String connectivity) {
+				s.o.p("M2");
+			}
+		}
+
+
+		Mobile m = new Mobile(); // P1, M1
+
+
+		===========
+
+		2) 
+		public class Product  {
+			public Product() {
+				s.o.p("P1");
+			}
+			public Product(int id) {
+				s.o.p("P2");
+			}
+		}
+		 
+		public class Mobile extends Product {
+			public Mobile() {
+				s.o.p("M1");
+			}
+			public Mobile(int id, String connectivity) {
+				s.o.p("M2");
+			}
+		}
+
+
+		Mobile m = new Mobile(100, "iPhone XR"); // P1, M2
+
+
+		3) 
+	
+		public class Product  {
+			public Product() {
+				s.o.p("P1");
+			}
+			public Product(int id) {
+				s.o.p("P2");
+			}
+		}
+		 
+		public class Mobile extends Product {
+			public Mobile() {
+				s.o.p("M1");
+			}
+			public Mobile(int id, String connectivity) {
+				super(id);
+				s.o.p("M2");
+			}
+		}
+
+
+		Mobile m = new Mobile(100, "iPhone XR"); // 
+
+
+
+
+		===
+		Don't do this:
+			public Mobile(int id, String connectivity) {
+			
+				s.o.p("M2");
+				super(id); // ERROR
+			}
+
+			Compiler adds super();
+
+			public Mobile(int id, String connectivity) {
+				super();
+				s.o.p("M2");
+				super(id); // ERROR
+			}
+
+		===================================================
+
+		Inheritance and methods:
+
+		class Product  {
+			public double getPrice() {
+					return 100;
+			}
+		}
+		 
+		class Mobile extends Product {
+			@Override
+			public double getPrice() {
+					return 500;
+			}
+
+			public String getConnectivity() {
+				return "4G";
+			}
+		}
+
+		Mobile m = new Mobile();
+		m.getPrice() ; // 500
+		m.getConnectivity(); // 4G
+
+		override is a conspt where a base class already has that functionality,
+		but we supress and override by redefining in inherited class
+
+		// create an object of mobile, but use product pointer/ref
+		Product p = new Mobile(); // valid ==> upcasting
+
+		s.o.p(p.getPrice()); // 500
+		s.o.p(p.getConnectivity()); // Product doesn't understand getConnectivity() == Compilation ERROR
+=========================================================================================================
+	
+
+	Dishwasher, Washin Machine, Microwave, .....
+	Product[] products = new Product[5000]; 
+		can have tv. mobile, wm.mw, ....
+
+
+	private static void displayExpensive(Product[] products) {
+		for(Product p : products) {
+			if(p.isExpensive()) {
+				System.out.println(p.getName() + " is expensive !!!");
+			} else {
+				System.out.println(p.getName() + " is not expensive !!!");
+			}
+		}
+	}
+
+	Without upcasting:
+		Mobile[] ..
+		Tv[] ...
+
+		for(Mobile m : mobiles){
+
+		}
+		for(Tv t : tvs){
+
+		}
+
+		for(Wm wm : machines) {
+
+		}
+
+
+	Product p = new Tv();
+
+	(p instanceof Tv) ==> true
+
+	(p instanceof Product) ==> true
+
+	(p instanceof Object) ==> true
+
+	(p instanceof Mobile) ==> false
+
+
+
+	(p.getClass() == Tv.class) ==> true
+	(p.getClass() == Product.class) ==> false
+	(p.getClass() == Object.class) ==> false
+	=========================
+
+	3 days
+		OOP, collection, Java 8 features, Threads, Functional Style
+	4 and 5 day
+		JDBC, Web application , RESTful web services

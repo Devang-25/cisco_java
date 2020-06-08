@@ -34,6 +34,8 @@ public class AccountClient {
 		}
 		
 		System.out.println(Account.getCount());
+		
+		 
 	}
 
 }
