@@ -18,6 +18,11 @@ public class Tv extends Product {
 	public void setScreenType(String screenType) {
 		this.screenType = screenType;
 	}
-	
+
+	@Override
+	public boolean isExpensive() {
+		// write logic
+		return false;
+	}
 	
 }

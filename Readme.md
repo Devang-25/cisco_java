@@ -645,3 +645,306 @@ Softwares Required:
 		OOP, collection, Java 8 features, Threads, Functional Style
 	4 and 5 day
 		JDBC, Web application , RESTful web services
+		============
+
+		Day 2
+		======
+		ctrl + space
+			syso
+			for
+			foreach
+==================================================================
+
+		Array's are reference type in Java
+			Memory is allocated on heap area and it's pointer/reference is on stack
+
+		int[] elems = new int[4];
+
+		int[] data = {45,122,6,15};
+
+		In Java we don't have pointer arithmetics
+
+		In c or c++:
+		int * ptr = ..
+		ptr++;
+		ptr++;
+
+		=====================
+
+		rahulAcc ID 	17
+		swethaAcc ID 	21
+
+
+		In Programming languages which uses Virtual Machine [ Java, .NET, JS], address locations are 
+		never exposed directly 
+
+		Why this approach?
+			All codes which run on VMs [ Java VM] uses GC ==> Garbage Collection.
+
+			GC is a thread running within VM whose job is to remove un reachable objects.
+
+		--
+
+		In C:
+			int * ptr = malloc(100);
+			..
+			free(ptr);
+
+		In C++:
+			Person p = new Person();
+			delete p;
+
+		In Java:
+			Product p = new Product();
+			we don't release the memory, GC cleans up the memory allocated for "p" when it no loger used/reachable
+
+
+		a() {
+			Product one = new Product();
+		}
+
+		main() {
+			Product p = new Product();
+			a();
+			// other lines of code
+
+			p.getName();
+			..
+			p = null;
+
+			// here p is eligible for GC
+		}
+
+		GC thread is handled internally by JRE
+
+		System.gc(); // a request to start GC
+
+		Short Term GC:  frequently running GC, clears objects which is of not reachable, objects which are
+			still in use and not able to clear will be moved to Old Generation.
+			After Short term GC, EDEN area is empty and ready for newly created objects
+			Scavenger type
+
+		Full Term GC: runs for example after every 10 cycles of Short term
+======================================================================================
+
+	keyword: abstract
+
+	1) abstract classes can't be instantiated
+
+		public abstract class Product {
+
+		}
+
+		Product p = new Product(); // error
+		Product p = new Tv(); // valid
+
+	2) abstract methods: methods without body
+		this enforces all inherited classes to compulsorly override the method
+
+=====================================================================================
+
+	using RTTI ==> Runtime Type Indentification.
+	Given an object at runtime we get all it's methods, constructors, ...
+
+
+	Product p = new Product();
+		p.getId();
+		p.getName();
+
+	Ptr is to a method
+
+		ptr ===> getId()
+
+	============
+
+		iNHERITANCE Recap:
+			1) every class extends Object class in Java
+			2) Object class is the root class
+			3) Java doesn't support multiple inheritance
+				class A extends B , C { } // not valid
+			4) uses "extends" keyword for inheritance
+			5) In Java method calls are always dynamic binding
+			6) override is a concept where the sub class redifines the methods 
+				present in base class
+			7) overload is a mechanism where method name is same, but arguments are different
+
+				class Test {
+						public static void add(int x, int y) {
+
+						}
+						public static void add(int x, int y, int z) {
+
+						}
+						public static void add(String x, int y) {
+
+						}
+
+				}
+
+				Test.add(3,4);
+				Test.add(3,4, 5);
+				Test.add("Hello",4);
+	================================================
+
+		Realization Relationship
+		========================
+			A object/component will realize the behaviour specified by other in order to communicate.
+
+		==> one object specifies the protocol, other object implements that protocol so that 
+			communication between them can happen
+
+		==> this happens using "interfaces"
+
+			Real world interface: HDMI, VGA, USB Port
+
+			Tv specfies HDMI protocol
+				Settop box implements HDMI
+				DVD player implements HDMI
+
+				the way settop box and DVD implement vary.
+
+			==========
+
+			In java interfaces are declared using "interface" keyword
+			interface will just declare functionalities and no implementation
+
+			interface EmployeeDao {
+					void addEmployee(Employee e);
+					Employee getEmployee(int id);
+			}
+
+			as of java <8 : all methods in interface are abstract and public by methods
+
+
+			Why should we program to interface?
+				1) DESIGN
+				2) IMPLEMENTATION
+				3) TESTING
+				4) INTEGRATION
+				5) loose coupling
+
+				META-INF/services/com.example.CodecSet
+
+
+
+			client refers to different implmentation classes using interface.
+
+			one line of code is getting changed in client to switch to different strategies
+				from MySQL to MongoDB to File,...
+
+			But the problem in real-world: clients are of heterogenous type [ mobile, web , standalone]
+			and desktop clients might have been deployed across world
+			Changing all the client codes is not feasable.
+
+			Decouple the hard-coded implementation class and use configuration files
+
+			create META-INF/services folder under "src"
+			create a file with fully qualified "interface" name [ com.cisco.dao.MobileDao]
+			within the file add a line which implementation class has to be used
+			com.cisco.prj.dao.MobileDaoMySQLImpl
+
+
+			ServiceLoader approach advantages:
+				a) Client is loosely coupled, no changes in client ever
+				b) switching between strategies done by only changing "META-INF/services/pkg.interfacename"
+				c) Client need not know which implementation class is used
+
+		========================================
+
+											Dance d = new Hero();
+											d.dance();
+
+											Fight f = new Hero();
+											f.fight();
+											f.swim(); //error
+	interface Dance { 							
+		void dance();
+	}
+
+	inteface Swim {
+		void swim();
+	}
+
+	interface Fight {
+		void fight();
+	}
+
+	// Actor is capable of dancing, Actor realizes dance capability
+	class Actor implements Dance {
+		public void dance() { 
+			// logic 
+		}
+	}
+	// hero is an actor and capable to dance. also he can swim and fight
+	class Hero extends Actor implements Swim, Fight{
+		public void swim() {
+
+		}
+		public void fight() {
+
+		}
+	}
+	==
+	 In real world: Hero knows to swim, dance and fight.
+	 StuntMaster directs fight sequence.
+	 Choregrapher directs dance sequence
+	 Swim instructor directs swim of hero
+
+	 ==============================
+
+	 	names
+		["Clooney", "Brad","Angelina","Lee"]
+
+		numbers
+		[56,72,12,30,5]
+
+
+		to sort/max.min what do you do?
+			you compare objects then re-arrange
+
+		To perform operations like sort , max, min java has an interface Comparable
+
+
+		interface Comparable {
+				int compareTo(Object obj);
+		}
+
+		class String implements Comparable {
+				//code
+				public int compareTo(Object obj) {
+					// logic to return ASCII/unicode charater difference
+					// A with B ==> -1
+					// A with C ==> -2
+				}
+		}
+		[ "Angelina",  "Brad", "Clooney","Lee"]
+		// ocp
+		void sort(Comparable[] elems) {
+				for i = 0 to elems length
+					for j = i + 1 ...
+						if(elems[i].compareTo(elems[j]) > 0) { // "Clooney".compareTo("Brad")
+								swap code
+						}
+		}
+		Product[] products = new Product[5]; // Array of 5 Pointers
+		products[0] = new Tv(133, "Sony Bravia", 135000.00, "LED"); // upcasting
+		products[1] = new Mobile(453, "MotoG", 12999.00, "4G");
+		products[2] = new Tv(634, "Onida Thunder", 3500.00, "CRT");
+		products[3] = new Mobile(621, "iPhone XR", 99999.00, "4G");
+		products[4] = new Mobile(844, "Oppo", 9999.00, "4G");
+
+		class Product implements Comparable {
+
+					public int compareTo(Object obj) {
+							decide to compare based on name, qty, price ,id
+					}
+		}	
+
+
+		========
+
+		Good practice: all entities are implementing comparable, equal()
+
+		==============================================================================
+
+		

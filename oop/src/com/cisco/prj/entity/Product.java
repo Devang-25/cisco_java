@@ -1,6 +1,6 @@
 package com.cisco.prj.entity;
 
-public class Product {
+public abstract class Product implements Comparable {
 	private int id;
 	private String name;
 	private double price;
@@ -31,7 +31,20 @@ public class Product {
 		this.price = price;
 	}
 	
-	public boolean isExpensive() {
-		return false;
+	@Override
+	public int compareTo(Object o) {
+		Product other = (Product) o;
+		return (int) (this.price - other.price) ;
 	}
+	
+//	public boolean isExpensive() {
+//		return false;
+//	}
+	
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", price=" + price + "]";
+	}
+	
+	public abstract boolean isExpensive();
 }
