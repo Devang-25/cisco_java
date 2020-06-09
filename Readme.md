@@ -947,4 +947,265 @@ Softwares Required:
 
 		==============================================================================
 
-		
+	 	interface Flyable {
+	 		void fly();
+	 	}
+
+	 	Flyable f = new Flyable(); // error, can't instantiate Flyable
+
+	 	class Bird implements Flyable {
+	 			public void fly() {
+
+	 			}
+	 	}
+
+	 	class AeroPlane implements Flyable {
+	 			public void fly() {
+
+	 			}
+	 	}
+
+	 	Flyable f = new Bird(); // valid
+	 	Flyable f = new AeroPlan(); // valid
+	 		===
+
+	 		Anonymous class
+
+	 		Flyable f = new Flyable() {
+	 			public void fly() {
+	 					s.o.p("Jumo from 10th floor!!!")
+	 			}
+	 		};
+
+	 		Product p = new Product() {
+	 			public boolean isExpensive() {
+	 					// default
+	 			}
+	 		};
+
+	 	interface Consumer {
+	 		void action(Object obj);
+	 	}
+
+	 	void forEach(Object[] elems, Consumer cons) {
+	 			for(Object o : elems) {
+	 				cons.action(o);
+	 			}
+	 	}
+
+	 	Dummy.java
+	 	class Dummy implements Consumer {
+	 			public void action(Object obj) {
+	 				write obj to database;
+	 			}
+	 	}
+
+	 	String[] names = ["Clooney", "Brad","Angelina","Lee"]
+	 	Dummy d = new Dummy();
+	 	
+	 	forEach(names, d); 
+
+	 	// Anonymous class
+	 	Consumer c = new Consumer() {
+	 			public void action(Object obj) {
+	 				System.out.println(obj);
+	 			}
+	 	}
+	 	forEach(names, c);
+
+	 	==============================================
+
+	 	Without generics:
+
+	 	class IRectangle {
+	 			int width;
+	 			int breadth;
+	 	}
+
+	 	class DRectangle {
+	 		double width;
+	 		double breadth;
+	 	}
+
+	 	class SRectangle {
+	 		String width;
+	 		String breadth;
+	 	}
+
+
+	 	Generics in Java: Genric Type is  <T>
+
+	 	Generic class
+
+	 	class Rectangle <T> {
+	 		T width;
+	 		T breadth;
+	 		...
+	 	}
+
+
+	 	Rectangle<Integer> r1 = new Rectangle<Integer>(4,5);
+	 	Rectangle<Double> r2 = new Rectangle<Double>(1.4,4.5);
+	 	Rectangle<String> r3 = new Rectangle<String>("1 inch","5 inch");
+
+	 	Limitation is Generic type can be only object and not primitive
+
+	 	Rectangle<int> ; // not valid
+
+	 	Rectangle<double>; // not valid
+
+	 	Integer, Double , Float are type-wrapper classes for int, double and float:
+
+	 	Generic interface:
+
+	 	public interface Comparable<T> {
+	 		 public int compareTo(T o);
+	 	}
+
+	 	class Product implements Comparable {
+	 			@Override
+				public int compareTo(Object o) {
+					Product other = (Product) o;
+					return (int) (this.price - other.price) ;
+				}
+	 	}
+
+
+	 	class Product implements Comparable<Product> {
+	 			@Override
+				public int compareTo(Product o) {
+					return (int) (this.price - other.price) ;
+				}
+	 	}
+
+	 	public interface Consumer<T> {
+	 		void accept(T t);
+	 	}
+
+	 	=================================
+
+	 	// Anonymous class
+		doTask(names, new Consumer<String>() {
+			@Override
+			public void accept(String t) {
+				System.out.println(t);
+			}
+		});
+
+		// Lambda exressions can be used as a shorter form of anoymous class
+
+
+		doTask(names, (String t) -> {
+				System.out.println(t);
+			}
+		});
+
+		---
+
+		doTask(names, (t) ->  System.out.println(t) );
+
+		doTask(names, t -> System.out.println(t));
+
+		===================================================
+
+		Exception handling in Java:
+
+			An abnormal condition that arises during program execution is an exception.
+
+			In Java exceptions are represented as objects which provides the following info:
+
+			a) What went Wrong?
+			b) Why did it go wrong?
+			c) Where?
+
+		====================
+
+		public class Test {
+
+			public static void main(String[] args) {
+				System.out.println("Hello !!");
+					doTask();
+				System.out.println("Bye!!!");
+			}
+
+			private static void doTask() {
+				int x = 10;
+				int y = 0;
+				System.out.println("Result : " + x / y);
+				System.out.println();
+			}
+		}
+		Hello !!
+		Exception in thread "main" java.lang.ArithmeticException: / by zero
+			at Test.doTask(Test.java:13)
+			at Test.main(Test.java:6)
+
+	==========================================
+
+
+		Checked Exceptions:
+
+	public class Test {
+
+		public static void main(String[] args) {
+			System.out.println("Hello !!");
+				doTask();
+			System.out.println("Bye!!!");
+		}
+
+		private static void doTask() {
+			 try {
+				FileInputStream fis = new FileInputStream("a.txt");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+
+	=== 
+
+	unchecked exceptions are supposed to be handled using conditional statements:
+
+		private static void doTask() {
+				int x = 10;
+				int y = 0;
+				if( y ! = 0) {
+					System.out.println("Result : " + x / y);
+				}
+			}
+
+		private static void doTask(Product p) {
+			if( p != null) {
+				System.out.println(p.getName());
+			}
+		}
+
+	====================
+
+
+public class Test {
+
+	public static void main(String[] args) {
+		System.out.println("Hello !!");
+		try {
+			doTask();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Bye!!!");
+	}
+
+	private static void doTask() throws FileNotFoundException {
+		doAnotherTask();
+	}
+
+	private static void doAnotherTask() throws FileNotFoundException {
+		FileInputStream fis = new FileInputStream("a.txt");
+	}
+
+}
+===============

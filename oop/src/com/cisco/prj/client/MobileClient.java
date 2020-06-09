@@ -14,8 +14,8 @@ public class MobileClient {
                 ServiceLoader.load(MobileDao.class);
 		//load ==> checks entries in pkg.MobileDao file and creates objects
 		 
-		MobileDao mobileDao = services.findFirst().get();
-		mobileDao.addMobile(m);
+//		MobileDao mobileDao = services.findFirst().get();
+//		mobileDao.addMobile(m);
 		// 1000 lines of client
 		for(MobileDao mdao : services) {
 			mdao.addMobile(m);
