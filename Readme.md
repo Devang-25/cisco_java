@@ -1209,3 +1209,444 @@ public class Test {
 
 }
 ===============
+
+Day 3
+=====	
+	Recap:
+		interface: contains abstract methods and constants, it can't have instance varibles	
+
+		interface Test {
+				int x = 100; // become a constant;
+		}
+
+		Test.x = 120; //error
+
+		Can't instantiate a interface.
+
+		class implements interface [ Realization relationship]
+
+		class can implement multiple interfaces
+
+		Anonymous class: class without a name, used to create objects of interface/abstract class
+			without creating one more java file
+
+		Lambda can be used instead of anonymous class only if the interface has one method to implement.
+
+		interfaces with one method are refered as Functional interface:
+
+		@FunctionalInterface
+		public interface Computation {
+				int compute (int x, int y);
+		}
+
+		============
+
+		interface Dance {
+			void dance();
+		}
+
+		interface Fight extends Dance {
+			void fight();
+		}
+
+		class Hero implements Fight {
+				void dance() {}
+				void fight() {}
+		}
+
+		================================================================
+
+		Java Collection Framework
+			==> Data containers 
+			Array is a data container
+				Fast access
+				Limitations: can't grow / can't shrink
+				Needs contiguous memory
+		JCF provides many data containers.
+			JCF has 
+				a) interfaces
+				b) implementation classes 
+				c) utility classes [ sort, binarySearch, max, min, shuffle, reverse]
+
+
+		Comparable vs Comparator
+
+		Comparable is used as natural way of comparing
+			==> logic is written in entity class
+			==> for Strings based on ASCII/ Unicode character values
+			==> Product: based on product id [ PK]
+			==> Employee: based on employee id [ Primary Key]
+
+		Comparator is used by client to specifiy a certain way of comparing.
+			==> logic is written in client code
+			==> I may want strings to be compared based on length
+			==> on client wants products to be sorted based on price
+			==> another client wants products to be sorted based on name
+			==> another client wnats products to be sorted based on category
+
+		String[] names = {"Clooney", "Brad","Angelina","Lee"};
+
+		Natural way of sorting order will be:
+			Angelina, Brad, Clooney, Lee
+
+		But we can also sort them as: [ length as criteria]
+			Lee, Brad, Clooney, Angelina
+
+		public interface Comparable<T> {
+			    public int compareTo(T o);
+		}
+
+		class Product implements Comparable<Product> {
+				public int compareTo(Product o) {
+						this ==> p1
+						o ==> p2
+				}
+		}
+
+		p1.compareTo(p2);
+
+
+
+		@FunctionalInterface
+		public interface Comparator<T> {
+			int compare(T o1, T o2);
+		}
+
+
+		client code:
+
+			Comparator<Product> comp = new Comparator<Product>() {
+					public int compare(Product o1, Product o2) {
+
+					}
+			};	
+
+			compare(p1,p2); // "this" refers to "client"
+
+
+			class Arrays {
+
+				sort(Comparable[] elems) {
+						for i
+							for j 
+								if(elems[i].compareTo(elems[j]) > 0)
+									swap
+				}
+
+
+				sort(Object[] elems, Comparator comp) {
+					for i 
+						for j 
+							if(comp.compare(elems[i], elems[j]) > 0) 
+								swap
+				}
+			}
+
+
+			Arrays.sort(products, (p1,p2) -> ); here p1 and p2 type inference to Product
+			because products is a collection of type Product
+
+	==============================================
+
+	interface Computation {
+		int compute(int x, int y);
+	}
+
+	void sample(Computation comp){
+
+	}
+
+
+	sample((x,y) -> x + y);
+
+	Computation sum = (x,y) -> x + y;
+
+	sample(sum);
+
+	=====================================================
+
+
+	List list = new ArrayList()
+
+	List list = new LinkedList()
+
+	List list = new vavr list / apache list
+
+	good practice : use interface to point to implementation
+
+		List list = new ArrayList();
+
+		Avoid using implementation as reference
+
+		ArrayList list = new ArrayList(); // works but tightly coupled to ArrayList
+	==========
+	Avoid Heterogenous collection:
+
+	List list = new ArrayList();
+		list.add(12);
+		list.add("A");
+		list.add(new Date());
+		list.add( new Product());
+
+		// Not Type safe
+	for(int i = 0; i < list.size(); i++) {
+		if(list.get(i) instanceof String) {
+
+			} else if(list.get(i) instanceof Date) {
+			
+			}
+			...
+
+	}
+
+	================================
+
+	Prefer generic type of container:
+
+	List<String> list = new ArrayList<String>();
+		list.add("A");
+		list.add(new Date()); // ERROR
+
+
+	============================================
+
+		Functional style of programming:
+			using High Order Functions:
+
+			High Order Functions are functions:
+				a) accept other functions as arguments
+				b) returns a function
+
+			Commonly used HOF are:
+				a) filter
+				b) map
+				c) reduce
+				d) forEach
+				e) sort
+				f) limit
+				g) skip
+
+		functional style of programming is not tightly coupled to state of object.
+
+		Example: Account.java deposit(double amt) { this.balance += amt; }
+			The deposit method can be used only on Account type of object
+
+		void filter(predicateFn) {
+				create  filteredcollection
+					traverse through input collection
+						if(predicateFn) {
+								store into filteredcollection
+						}
+					end travers
+					return filteredcollection
+
+		}
+
+
+		=======
+
+		void map(transformFn) {
+				create  collection
+					traverse through input collection
+						 collection.add(transformFn(input));
+					end travers
+					return collection
+
+		}
+
+		==================
+
+		intermediary operations: map, filter, flatMap, skip, limit
+
+		terminal operations: forEach, collect, reduce
+
+		If we don't have terminal operator data won't flow in the stream;
+
+		Data won;t flow , because no terminal opertion:
+		products.stream()
+				.filter(p -> p.getCategory().equals("mobile"))
+				.map(p -> p.getName());
+		==============================================
+
+		reduce is to get aggregates [ sum, count, max, avg]
+			select sum(price) from ....
+
+		reduce returns a single value.
+			
+
+		============================
+
+		Set ==> unique collection
+
+		HashSet uses hashCode() and equals() to identify duplicates and position of object
+		in collection
+
+
+		===
+		HashCode: [ numerical representation of object]
+			1) 2 similar objects should have same hashcode
+			2) 2 dis-similar objects can also have same hashCode
+
+
+		class Rectangle {
+				int w, b;
+
+				public int hashCode() {
+					return w;
+				}
+		}
+
+		Rectangle(4,5) ==> 20
+		Rectangle(5,4) ==> 20
+		Rectangle(20,1) ==> 20
+		Rectangle(10,2) ==> 20
+		..............
+
+		Rectangle(4,5) ==> 20
+
+
+		List ==> faster add/remove operations
+
+		Set ==> Avoid using it if too many add / remove happening 
+======================================================================================
+
+	HashSet is an implementation of Set interface.
+	uses hashCode() and equals() to identify duplicates.
+
+	If 2 objects has same hash code, the equals() on those objects are called.
+	If equals() returns true, then the object is treated as duplicate.
+
+	If hashCode is same and equals() returns false, it's not a duplicate bu hashCode collides,
+	In this senario internally a linled list is created to store the element with same index.
+
+
+	UI
+		accedentally clicks on "add button" twice before the data is sent to server
+
+	Set -> you can't do : sort, shuffle, reverse
+
+
+=====================================
+
+	Map is a container to store data in the form of key/value pair:
+		Example: Dictionary, DNS register [ IP Address is KEy / Domain name is value],
+
+		WebEx: Panelist | people
+				Attendees | people
+		========
+
+		Shopping Cart
+			Key is Product | Value is qty
+
+		Key has to be unique | value can be duplicate
+
+		=============
+
+		HashMap is an implementation of Map interface
+
+			Good practice: if 75% of buckets are full capcity doubles to avoid hash collisions
+
+			Whenever capcity doubles, re-hashing happens
+
+			new HashMap<String, Integer>(16,0.75f);
+
+				intial capacity is 16, re-hashing happens if 75% is full
+
+
+		Key is "Computer"
+			first it adds "p1" as value
+
+			"p1" and "p3"
+			it overwrites "computer" now the value is [p1, p1]
+
+	===========================================================================================
+
+		Java Concurrent Programming [ Multithreaded applications]
+
+		-------------
+
+			Process --> Program in execution, every process should have at least one unit of work executing.
+			Unit of work --> thread
+
+			Single threaded applications will have only one unit of work
+				==> notepad, calculator
+
+			In applications if we have many units of work concurrently running we say it as multi-threaded app.
+				==> Eclipse, Word, Browser, ..
+
+			Word:
+				-> Document editing is one unit of work
+				-> Spell check
+				-> Grammer check
+				-> auto save
+
+			Eclipse:
+				--> editing a file
+				--> Syntax check
+				--> Intellisense
+				--> autosave
+			Browser:
+				--> fetch data from server 
+				--> rendering [ fetched data is converted to UI]
+				--> event handling
+
+			===========
+			
+			Why do I need multi-threaded application?
+				1) Avoid starvation	 ==> Better User Experience
+				2) Optimization of available resources.
+					1 Thread -->  1 CPU
+					sharing objects on heap between threads
+				3) Each task life cyle can be independent of other
+
+			============================
+
+			Java provides Runnable interface, any code which has to run as a thread needs to implement this interface
+
+			interface Runnable {
+					void run();
+			}
+
+			class SpellCheck implements Runnable {
+					public void run() {
+						doSpell();
+					}
+
+					public void doSpell() {
+
+					}
+			}
+
+			class GrammerCheck implements Runnable {
+					public void run() {
+
+					}
+			}
+
+
+			======
+
+				Thread.java => provides Thread control methods:
+					start()
+					sleep(long ms)
+					yield()
+					join()
+					interrupt()
+
+					deprectated: suspend(), resume(), stop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
