@@ -1826,9 +1826,163 @@ Day 3
 
 			============================================================
 
-			
+			JDBC
+				Java Database Connectivity
+				==> It's an integration API to connect to RDBMS
+
+			Java provides interfaces, implementation classes are provided by database vendors
 
 
+			Steps:
+				1) load classes provided by database vendors:
+					Class.forName("com.mysql.jdbc.Driver");
+
+					Class.forName("oracle.jdbc.OracleDriver");
+				2) Establish a database connection:
+
+				Connection con = DriverManger.getConnection(URL, USER, PWD);
+
+				URL:
+					jdbc:mysql://192.168.12.20:3306/emp_db
+
+					jdbc:oracle:@198.44.21.44:1521/emp_db
+
+				3) Send SQL statements:
+					a) Statement
+						if SQL doesn't take IN parameters
+						select * from products
+					b) PreparedStatement
+						if SQL accepts IN parameters 
+							select * from products where category = ?
+
+							"?" is an IN parameter
+
+							insert into products values (?,?,?,?)
+					c) CallableStatement
+						--> StoredProcedure of database
+				4) ResultSet
+					is a cursor to fetched records from database / table
+
+				5) finally release the connection in "finally" block
+			============================================================================
+
+			MySQL installation complete.
+
+			Maven ==> Java Development tool / Automation tool
+				==> Dependency managment
+					Building enterprise application
+					my application will use n number of 3rd party libraries,
+					all these libraries might be present on CDN,
+					these libraries are in the form of "JAR" files
+					each one of the "jar" has an identification
+						"artifactID", "groupId" and "version"
+
+					"groupId" --> organization + project [ com.amazon.shop]
+					"artifactID" --> module name [ customermodule]
+					"version" : 1.0.0
+
+				pom.xml ==> Project Object model
+						==> goals [ clean, compile, test, deploy]
+						==> dependencies
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>5.1.27</version>
+							</dependency>
+
+						Without MAven: every "jar" has to be downladed and added project
+						==> Different team members might download different versions from
+						different locations, these can lead to abnormality
+
+						https://www.findjar.com/search?query=mysql-connector&more=false
+
+						===
+
+						Maven provides a standard for all developers:
+							Maven projects are compatable to any IDEs
+							Using maven we can specify which versions has to used
 
 
+						MySQL:
+						 create database cisco_2020;
 
+						 use cisco_2020;
+
+						 create table products (id int PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), price double, category VARCHAR(100));
+
+
+						 insert into products values (0, 'iPhone', 78000.00, "mobile");
+						 insert into products values (0, 'Mouse', 500.00, "computer");
+						 insert into products values (0, 'Samsung', 278000.00, "tv");
+
+						 select * from products;
+
+						======================
+=========================================================================================
+
+	Engines:
+		Servlet engine is used to serve dynaminc content using Java as programming language
+		NodeJS ==> to serve dynamic content using JavaScript as programming language
+		ASP.NET engine ==> serve dynamic content using C# or VB.NET
+		PHP
+
+		When a client makes a request,
+			==> servlet engine creates 2 objects [ request and response]
+			==> request encapsulates all info coming from client [ form data + request params + browser]
+			==> response is used to write data back to client
+
+			==> engine assigns a thread from pool to each client handling
+
+			==> Engines maps a resource to URI
+
+				http://server:port/products
+
+				http://server:port/orders
+
+
+		Web Archive: "war" files like "jar"
+
+		
+
+		class LoginServlet extends HttpServlet {
+			// code
+		}
+
+		web.xml <== deployment descriptor
+		Engine reads this and creates object of LoginServlet and Product Servlet
+		<servlet>
+			<servlet-name> loginservlet </servlet-name>
+			<servlet-class> com.cisco.web.LoginServlet </servlet-class>
+		</servlet>
+
+		<servlet>
+			<servlet-name> productservlet </servlet-name>
+			<servlet-class> com.cisco.web.ProductServlet </servlet-class>
+		</servlet>
+
+
+		<serlvet-mapping>
+			<servlet-name> productservlet </servlet-name>
+			<url-pattern> /products </url-pattern>
+		</servlet-mapping>
+		<serlvet-mapping>
+			<servlet-name> loginservlet </servlet-name>
+			<url-pattern> /login </url-pattern>
+		</servlet-mapping>
+
+		Alternate to web.xml is Annotation
+
+		===============
+
+		Jetty / Tomcat are web servers with Servlet engine
+
+		Application Servers : JBOSS, Weblogic, WebSphere, GlassFish
+
+		===
+
+		1 hour ==> Database application ==> web application
+
+		Spring Boot + Hibernate [ JPA] ==> RESTful web service
+
+
+		
