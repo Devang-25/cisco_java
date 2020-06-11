@@ -1634,17 +1634,199 @@ Day 3
 					interrupt()
 
 					deprectated: suspend(), resume(), stop()
+==========================================================================
+
+	Day 4
+	=====
+	Java Concurrent Programming:
+		Runnable interface ==> run()
+		Thread class: start(), sleep(), join(), interrupt(), yield()
+
+		Thread.currentThread(); ==> reference to the thread which is currently in running state
+
+	Each thread has its own stack, all threads share classes loaded and objects created.
+
+	===========================================
+
+		Thread Safety
+		-------------
+			A member is said to be thread safe if it doesn't get effected in multi-threaded environment
+
+	Local variables ==> Thread safe; each thread has a seperate stack
+	instance variables ==> Not thread safe; reside on heap; heap is shared by all threads
+
+	==
+	synchronized ==> marks it as critical section, this enforces the thread to acquire lock before entering the
+		method, threads are not allowed to enter this method without lock
+		once threads come out of the method, lock is released
+
+
+	
+		synchronized acquires [Mutex/Lock/Monitor ]
+
+		wait releases [Mutex/Lock/Monitor]
+
+		if we invoke wait() without synchronized, trying to relase which you have not acquired.
+
+		sleep() doesn't acquire [Mutex/Lock/Monitor]
+
+	========================================================
+
+	In enterprise applications: we generally don't create threads using "new" keyword, instead we use thread pools
+
+	Issues:
+		latency in creating a thread and destroying a thread
+		can't limit the number of Threads
+
+	Solution is use Thread pools
+
+	====================================
+
+		Java also provides Lock API which can be used instead of synchronized
+
+			synchronized: 
+					only the owner can release
+					only one lock per object
+			Lock API:
+					other threads can also release the lock
+					many locks per object.
+
+			Lock API: lock is released just by callin "unlock()"
+
+			always release lock in finally block: finally block gets executed irrespective of
+			exception occurs or not
+
+
+			try{
+					int x = 10;
+					int y = 0;
+					int res = x / y;
+			} catch(Exception ex) {
+					s.o.p("problem")
+			} finally {
+					s.o.p("done")
+			}
+
+			problem, done
+
+			=========
+
+
+			try {
+					int x = 10;
+					int y = 2;
+					int res = x / y;
+			} catch(Exception ex) {
+					s.o.p("problem")
+			} finally {
+					s.o.p("done")
+			}
+
+			done
+============================================================================
+	
+		Lock Vs synchronized
+
+
+		Here we need to lock both the accounts:
+
+		class BankingService {
+				public void transferFunds(Account from, Account to, double amt) {
+					synchronized(from) { // lock from
+							synchronized(to) { // lock to
+									from.withdraw(amt);
+									to.deposit(amt);
+							}
+					}
+				}
+		}
+
+		DeadLock:
+		SB105 to SB101 , 5000 transfer : Both SB105 and SB101 needs to be locked
+		synhronized blocks instead of synchronized methods
+
+		T1 ==> SB105 to SB101 , 5000 transfer
+
+		T2 ==> SB101 to SB105 , 5000 transfer
+
+		with Locking API:
+
+			class BankingService {
+				public void transferFunds(Account from, Account to, double amt) {
+					if(from.balLock.tryLock(100)) {
+						try {
+							if(to.balLock.tryLock(100)) {
+								try {
+										from.withdraw(amt);
+										to.deposit(amt);
+									}
+								} finally {
+										to.balLock.unlock();
+								}
+						    }
+					   } finally {
+					   		from.balLock.unlock();
+					   }
+					}	
+				}	
+
+		T1 ==> SB105 to SB101 , 5000 transfer
+
+		T2 ==> SB101 to SB105 , 2000 transfer
+
+
+		=========================================================
+
+		Callable and Future:
+
+		Callable can be used instead of Runnable :
+
+			interface Runnable {
+					void run();
+			}
+			Runnable doesn't return a value
+			Runnable doesn't throw an exception
+
+			interface Callable<T> {
+					T call() throws Exception;
+			}
+
+
+			callable can return a value
+			callable can throw an exception
 
 
 
+			Future is a promise/ Async
 
 
+			class AThread implements Runnable {
+				run() {}
+			}
+
+			class BThread implements Runnable {
+					BThread(AThread t) {
+
+					}
+
+					run() {
+							code
+							t.join();
+							code
+					}
+			}
 
 
+			main() {
+					AThread t1 = new AThread();
+					BThread t2 = new BThread(t1);
+					t1.start();
+					t2.start();
+			}
 
+			============================================================
 
-
-
+			
 
 
 
