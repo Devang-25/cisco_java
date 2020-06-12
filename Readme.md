@@ -1986,3 +1986,291 @@ Day 3
 
 
 		
+		Day 5:
+
+		JDBC and Web application development:
+		=====================================
+
+		Java Database connectivity [ Integration API to connect to RDBMS]
+		JDBC is a collection on interfaces, implementation classes are provided by database vendors
+
+		Connection, DriverManager, Statement, PreparedStatement, ResultSet
+
+		Traditional Web application development converts dynamic data into HTML and sends to client.
+		==> Java Technology [ Servlet techonolgy] uses servlets to convert content into HTML
+		==> .NET [ ASP.NET converts content into HTML
+		==> PHP converts data into HTML
+
+		===> Clients are light-weight, just needs to understand HTML [ Browser]
+
+
+		Servlet Technology:
+			==> HTML for static content
+			==> Servlet for dynamic content
+			==> JSP for static + dynamic content
+			==> Filter, Listeners
+
+			===
+			<scope>provided</scope>
+				uses this dependency for compilation but don't include in packaging [ war]
+				this will be provided by the target environment [Tomcat, jetty, GlassFish, jBOSS, Weblogic]
+
+			Default: 	we create java independent modules
+				<packaging>jar</packaging>
+				customermodule.jar
+
+			Building web application:
+			<packaging>war</packaging>
+				databaseexample.war
+		====
+
+			main --> webapp folder is created for "war" type of maven projects
+			"webapp" is the folder where static contents like "html", "css", "js" , "images" ,... should be stored
+
+			"webapp" also contains "jsp" [ static + dynamic]
+
+
+			"servlets" will be written just like any other class "src/main/java"
+
+
+				only "war" files can be deployed on Web Servers with servlet engine
+
+
+			"war" ==> web archive
+
+			"ear" ==> enterprise archive
+					Servlets [war] + "EJB" [Distributed computing] + "JNDI" + "JMS" +...
+
+					"ear" can't be deployed on Tomcat/ Jetty; we need application servers like 
+						"GlassFish", "JBoss", "Weblogic" , "WebSphere", 
+
+
+			==========================
+			
+
+		Servlet API:
+
+		public void service(HttpServletRequest req, HttpServletResponse res)
+						|
+						V
+		public void doGet(HttpServletRequest req, HttpServletResponse res)
+		public void doPost(HttpServletRequest req, HttpServletResponse res)
+		public void doPut(HttpServletRequest req, HttpServletResponse res)
+		public void doDelete(HttpServletRequest req, HttpServletResponse res)
+
+
+		request and response objects created by the engine for ther user request
+		is injected to service(req, res);
+		within service() method there is a switch statment
+		if method of request is GET ==> call doGet
+		if method of request is POST ==> call doPost
+
+		============
+
+		GET request: is the default request : address bar, hyperlink
+
+		POST, PUT, DELETE request: has to be explicitly mentioned
+
+		GET --> to fetch data
+		POST --> create a resource
+		PUT --> update
+		DELETE --> DELETE a resource
+
+
+		==
+
+
+		int x = 10;
+
+		String s = "Hello";
+
+		s + x; //valid "Hello10"
+
+
+		Run As ==> Maven build[2] Goals: clean package
+
+		\target\databaseexample-1.0.0.war
+
+		this war file can be deployed on any server
+
+
+
+		Multi-stage processing of data
+
+		MVC Architecture: Model View Controller
+
+		M ==> Model is business data /logic [ entity , dao]
+
+		C ==> Controller [ Servlet ]
+
+		V ==> View [ JSP, HTML]
+
+		===================================================
+
+
+		for(Product p : products) 
+
+
+		<c:forEach items="${products}" var = "p" >
+
+			 ${p.id}  ==> same as p.getId()
+
+			 ${p.name} ==> p.getName()
+		</c:forEach>
+
+
+		Use JSP for static + dynamic presentation code
+		HTML ==> pure static
+		Logic + controller
+
+		==============================================================
+
+		Frameworks:
+
+		ORM ==> Object Relational Mapping
+
+		class <===> database tables are mapped
+
+		CRUD operations are performed by ORM frameworks:--> eliminate lots of plumbing code
+
+			save(p); ==> save is an ORM framework method, which internally
+				does the follwoing things:
+					a) establishes database connection
+					b) Creates PreparedStatement
+					c) sets IN Parameters
+					d) executes executeUpdate();
+					e) close connection
+
+			find(Product.class,4) ==>
+					a) establish connection
+					b) create Statement
+					c) execute SELECT statment
+						select * from products where ID = 4;
+					d) use REsultSet to traverse thro record
+					e) return matchin record
+					f) close connection
+
+		ORM frameworks: Hibernate, KODO, OpenJPA, topLink, ...
+
+		Hibernate is the most popular ORM framework by JBOSS [ RedHat]
+
+		JPA ==> Java Persistence API is a specification to user ORM
+			[ think JPA as interface; Hibernate, TopLink, etc as implementation]
+
+
+
+			EntityManager em = ....
+
+			em.save(p);
+
+			=====================================
+
+			Online Order application
+				entities:
+					Customer
+					Product
+					Order
+					LineItems
+					Address
+					Payement
+
+			Product ==> info about inventory data
+			ID: 120
+			Name: Parley Biscuit
+			QTY: 10000
+			Price: 5.50
+
+			LineItem ==> how you purchased the product
+			How you purchase "Parley Biscuit"
+			ID: 3,
+			"orderid": 450
+			"product" : 120
+			"qty" : 10
+			"price" : 450 [ 10 * 5.5 - discount]
+
+
+
+		========
+
+		MetaData: Annotations are meta data
+
+		@Column(name="order_date")
+		@Temporal(TemporalType.TIMESTAMP)
+		private Date orderDate = new Date();
+
+		================
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name="order_fk")
+	private List<LineItem> items = new ArrayList<>();
+
+
+		Order o1 has items i1, i2, i3
+
+		without cascade:
+			save(o1);
+			save(i1);
+			save(i2);
+			save(i3);
+			--
+			delete(i1); delete(i2); delete(i3); delete(o1);
+
+
+		With Cascade.ALL
+
+			save(o1); // internally it manages all items and they get saved
+
+			delete(o1); // deletes order and its items
+
+
+	FETCH:
+		by default its LAZY ( n + 1 hits)
+			select * from orders
+			then
+			select * from items where order_id = ..
+
+			n + 1: ==> if 100 orders are there
+				1 ==> select * from orders
+				then for each order :
+				 select * from items where order_id = 1 
+				  select * from items where order_id = 2
+				  ..
+				   select * from items where order_id = 100
+
+		EAGER:
+			uses join and fetches at one shot orders and its items
+
+
+spring.jpa.show-sql = true
+		ORMs generate SQL, we don't write SQLs
+		using this configurations we can inspect the SQLs generated by ORM
+		use this in development stage
+		save(p); ==> what SQL is generate
+		find(Product.class, 1); ==> what SQL is generated
+
+spring.jpa.hibernate.ddl-auto = update
+		ORMs maps class to table if table already exists , as in Product ===> products
+		If tables are not present, ORMs creates tables
+		"DDL" ==> Data Definition Langage [ CREATE TABLE, ALTER table, DROP table]
+
+		hibernate.ddl-auto = create
+			drop tables and re-create for every run of the application
+			useful in testing environment
+
+			5 records are inserted
+			test case is written to see if 5 records are present in table
+
+
+
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
+	we need to tell ORMS SQL should be generated for MySQL
+
+
+	 jdbc:mysql://localhost:3306/cisco_2020?createDatabaseIfNotExist=true
+
+	 if cisco_2020 does not exist
+	 create database cisco_2020;
+
+
+
+

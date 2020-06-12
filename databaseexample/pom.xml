@@ -5,6 +5,7 @@
 	<groupId>com.cisco.prj</groupId>
 	<artifactId>databaseexample</artifactId>
 	<version>1.0.0</version>
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>mysql</groupId>
