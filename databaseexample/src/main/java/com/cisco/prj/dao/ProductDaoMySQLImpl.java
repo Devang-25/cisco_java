@@ -10,10 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cisco.prj.entity.Product;
 
 public class ProductDaoMySQLImpl implements ProductDao {
-
+	private static Logger logger = LoggerFactory.getLogger(ProductDaoMySQLImpl.class);
+	
 	private static String DRIVER = "";
 	private static String URL = "";
 	private static String USER = "";
@@ -30,6 +34,8 @@ public class ProductDaoMySQLImpl implements ProductDao {
 
 		try {
 			Class.forName(DRIVER); // load database vendor classes
+			
+	        logger.info("Drivers loaded!!!");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -48,7 +54,9 @@ public class ProductDaoMySQLImpl implements ProductDao {
 			ps.executeUpdate(); // INSERT, DELETE and UPDATE
 		} catch (SQLException e) {
 //			e.printStackTrace();
+			 logger.error("unable to add product");
 			throw new DaoException("unable to add product", e);
+	       
 		} finally {
 			if (con != null) {
 				try {

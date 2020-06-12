@@ -2274,3 +2274,147 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 
 
 
+	 class Movie {
+
+	 		@ManyToMany
+	 		@JoinTable(
+ 				 name = "movie_actor", 
+  				joinColumns = @JoinColumn(name = "movie_id"), 
+  				inverseJoinColumns = @JoinColumn(name = "actor_id"))
+	 		private List<Actor> actors = new ArrayList<>();
+	 }
+
+
+	 class Actor {
+
+	 }
+
+	 ==================================================================
+
+
+	 Spring Framework:
+	 	lightweight container for building enterprise application,
+	 	Spring containers provides 
+	 		a) Dependency Injection [ Inversion Of Control]
+	 		b) Enterprise Integration APIs [ EAI]
+	 		c) Simplifies Building Web applciations and RESTful Webservices
+	 		d) AOP
+
+
+	 Spring instantiates objects of class which has one of these annotations:
+	 	@Component
+	 	@Repository
+	 	@Service
+	 	@RestController
+	 	@Configuration
+	 	@Controller
+
+	 	==========
+
+	 	@SpringBootApplication
+	 		has @ComponentScan
+	 			scans our classes for any of above mentioned annotated classes and objects are created
+	 		has @EnableAutoConfiguration
+	 			scans jars file and creates required objects for the application:
+	 				for example:
+	 					a) we need EntityManager for Hibernate
+	 					b) creates database connection pool
+	 							note DriverManager is used to get single connection
+	 							In enterprise apps need to have database connection pool
+	 							HikariCP ==> library for database connection pool
+	 							expeliclty i can add some other jar "c3p0" 
+
+	 ====================
+
+
+	 USe @RestController for RESTful web service controller
+
+	 @Controller for traditional web application
+
+	 @Repository is for DAO classes
+
+	 @Service is for Service classes
+
+	 @Component is for utility classes
+
+	 @Configuration is for configuration
+	 ==================
+
+	 Spring DATA jpa will internally generate implementation classes for interfaces of type JpaRepositry
+
+	 public interface ProductDao extends JpaRepository<Product, Integer> {
+
+	}
+
+
+
+	Spring will create:
+		@Repository
+		class ProductDaoJpaImpl implements ProductDao {
+
+			save(Product p ) {
+
+			}
+
+			Product find(int id) {
+
+			}
+			List<Product> findAll() {
+
+			}
+
+			....
+		}
+
+		=====
+
+		 public interface CustomerDao extends JpaRepository<Customer, String> {
+
+	}
+
+
+	@ResponseBody converts Java ==> Representation [ XML or JSON or CSV]
+
+	@RequestBody converts Representation ==> Java 
+
+
+	POST  http://localhost:9999/api/orders
+
+	BODY:
+
+		{
+			"customer" : {
+					"email" : "b@cisco.com"
+			},
+			"total" : 234446.33,
+			"items" : [
+					{
+							"product" : { "id" : 3},
+							"qty": 3,
+							"amount" : 35666.66
+					},
+					{
+							"product" : { "id" : 1},
+							"qty": 1,
+							"amount" : 90000.00
+					}
+			]
+		}
+
+	============
+
+		EJB ==> Enterprise Java Bean
+			designed for distributed computing
+			Objects can reside in different address space and communicate with each other
+
+			Server has to JAVA, client can be any language
+			binary data [ Marshalling / unmarshalling]
+
+		
+		Spring is used instead of EJB
+			@Inject ==> @Autowired
+			
+			Microservices : light weight ==> JSON is a carrier of data
+
+
+		JMX ==> Java Management Extension
